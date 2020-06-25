@@ -1,18 +1,19 @@
 package com.juno.nasa
 
-import android.app.DatePickerDialog
-import android.icu.util.Calendar
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.method.ScrollingMovementMethod
 import android.util.Log
-import android.view.View
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.net.URL
+
 
 class MainActivity : AppCompatActivity() {
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +24,29 @@ class MainActivity : AppCompatActivity() {
 
                 val response: TestResponse? = response.body()
                 Log.d("Response",response.toString())
+
+                var explanation:String  = response?.explanation.toString()
+                var date:String         = response?.date.toString()
+                var mediaType:String    = response?.media_type.toString()
+                var title:String        = response?.title.toString()
+                var hdUrl:String        = response?.hdurl.toString()
+
+                /*Set the values*/
+                id_title_tv.setText(title)
+                id_description_tv.setText(explanation)
+                id_description_tv.setMovementMethod(ScrollingMovementMethod())
+                id_title_tv.setMovementMethod(ScrollingMovementMethod())
+
+                if(mediaType == "image"){
+                    val url = URL(hdUrl)
+
+//                    val bmp =
+//                        BitmapFactory.decodeStream(url.openConnection().getInputStream())
+//                    id_iv.setImageBitmap(bmp)
+
+                }else if(mediaType == "video"){
+
+                }
 
             }
 

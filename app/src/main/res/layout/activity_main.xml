@@ -12,7 +12,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:gravity="center_vertical"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dip"
         android:orientation="horizontal">
 
     <TextView
@@ -20,8 +20,10 @@
         android:layout_weight="1"
         android:layout_gravity="center_vertical"
         android:gravity="center_vertical"
-        android:layout_height="wrap_content"
+        android:id="@+id/id_title_tv"
+        android:layout_height="fill_parent"
         android:text="Dummy Text Title 1"
+        android:scrollbars = "vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -31,31 +33,38 @@
             android:layout_margin="10dip"
             android:layout_width="50dip"
             android:id="@+id/ic_calendar_icon"
+            android:layout_gravity="center_vertical"
+            android:foregroundGravity="center_vertical"
             android:background="@drawable/ic_google_calendar"
             android:layout_height="50dip">
 
         </ImageView>
-
-
-
     </LinearLayout>
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:id="@+id/id_iv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/id_description_play_parent_ll"
+        android:layout_height="0dip"/>
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dip"
         app:layout_constraintStart_toStartOf="parent"
         android:id="@+id/id_description_play_parent_ll"
         app:layout_constraintBottom_toBottomOf="parent"
         android:orientation="horizontal">
-    <TextView android:layout_height="wrap_content"
+    <TextView android:layout_height="fill_parent"
         android:layout_width="0dip"
         android:layout_weight="1"
         android:text="Dummy Text"
+        android:scrollbars = "vertical"
         android:id="@+id/id_description_tv"/>
     <Button
         android:layout_width="wrap_content"
         android:id="@+id/id_play_or_zoom_btn"
-        android:layout_height="wrap_content"/>
+        android:layout_height="fill_parent"/>
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

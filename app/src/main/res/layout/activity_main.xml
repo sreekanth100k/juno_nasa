@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:id="@+id/id_title_calendar_parent_ll"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dummy Text Title 1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+        <CalendarView
+            android:layout_width="wrap_content"
+            android:id="@+id/id_calendar_view"
+            android:layout_height="wrap_content">
+
+        </CalendarView>
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        android:id="@+id/id_description_play_parent_ll"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:orientation="horizontal">
+    <TextView android:layout_height="wrap_content"
+        android:layout_width="0dip"
+        android:layout_weight="1"
+        android:text="Dummy Text"
+        android:id="@+id/id_description_tv"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:id="@+id/id_play_or_zoom_btn"
+        android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

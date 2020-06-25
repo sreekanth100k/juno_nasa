@@ -1,6 +1,9 @@
 package com.juno.nasa
 
+import android.graphics.BitmapFactory
+import android.os.Build
 import android.os.Bundle
+import android.os.StrictMode
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -40,9 +43,17 @@ class MainActivity : AppCompatActivity() {
                 if(mediaType == "image"){
                     val url = URL(hdUrl)
 
-//                    val bmp =
-//                        BitmapFactory.decodeStream(url.openConnection().getInputStream())
-//                    id_iv.setImageBitmap(bmp)
+                    val SDK_INT = Build.VERSION.SDK_INT
+                    if (SDK_INT > 8) {
+                        val policy =
+                            StrictMode.ThreadPolicy.Builder()
+                                .permitAll().build()
+                        StrictMode.setThreadPolicy(policy)
+
+                        val bmp =
+                            BitmapFactory.decodeStream(url.openConnection().getInputStream())
+                        id_iv.setImageBitmap(bmp)
+                    }
 
                 }else if(mediaType == "video"){
 

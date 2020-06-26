@@ -73,18 +73,28 @@ class MainActivity : AppCompatActivity() {
                         })
                         .into(id_iv)
 
-                        id_play_or_zoom_btn.setOnClickListener(View.OnClickListener {
+
+                    id_play_or_zoom_btn.setOnClickListener(View.OnClickListener {
 
                             val intent = Intent(this@MainActivity, PhotoOrVideoPreviewActivity::class.java)
                             intent.putExtra("url",hdUrl)
+                            intent.putExtra("photoOrVideo","photo")
                             startActivity(intent);
 
-                            overridePendingTransition( R.anim.slide_in_from_right_bottom, R.anim.no_animation );
+                            overridePendingTransition( R.anim.slide_in_from_right_bottom, R.anim.no_animation);
 
                         })
 
                 }else if(mediaType == "video"){
+                    id_play_or_zoom_btn.setBackgroundResource(android.R.drawable.ic_media_play)
+                    id_play_or_zoom_btn.setOnClickListener(View.OnClickListener {
+                        val intent = Intent(this@MainActivity, PhotoOrVideoPreviewActivity::class.java)
+                        intent.putExtra("url",hdUrl)
+                        intent.putExtra("photoOrVideo","video")
+                        startActivity(intent);
 
+                        overridePendingTransition( R.anim.slide_in_from_right_bottom, R.anim.no_animation);
+                    })
                 }
             }
 

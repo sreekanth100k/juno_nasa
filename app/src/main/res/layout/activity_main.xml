@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="@+id/id_outer_most_cl"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
@@ -12,7 +13,6 @@
         app:layout_constraintTop_toTopOf="parent"
         android:gravity="center_vertical"
         android:layout_width="fill_parent"
-        android:background="@android:color/holo_red_light"
         android:layout_height="100dip"
         android:orientation="horizontal">
 
@@ -22,7 +22,10 @@
         android:layout_gravity="center_vertical"
         android:gravity="center_vertical"
         android:id="@+id/id_title_tv"
+        android:textStyle="bold"
+        android:textSize="20sp"
         android:layout_height="fill_parent"
+        android:textAllCaps="true"
         android:text="Dummy Text Title 1"
         android:scrollbars = "vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -44,10 +47,12 @@
 
     <ImageView
         android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:id="@+id/id_iv"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/id_title_calendar_parent_ll"
         app:layout_constraintBottom_toTopOf="@id/id_description_play_parent_ll"
-        android:layout_height="0dip"/>
+        />
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -63,9 +68,12 @@
         android:scrollbars = "vertical"
         android:id="@+id/id_description_tv"/>
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="100dip"
         android:id="@+id/id_play_or_zoom_btn"
-        android:layout_height="fill_parent"/>
+        android:gravity="bottom"
+        android:layout_gravity="bottom"
+        android:background="@android:drawable/ic_menu_zoom"
+        android:layout_height="100dip"/>
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

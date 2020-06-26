@@ -1,12 +1,18 @@
 package com.juno.nasa
 
-import android.graphics.BitmapFactory
-import android.os.Build
+import android.app.ProgressDialog
+import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.os.StrictMode
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -16,14 +22,21 @@ import java.net.URL
 
 class MainActivity : AppCompatActivity() {
 
-
+    lateinit var mProgressDialog:ProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        id_outer_most_cl.visibility = View.INVISIBLE
+        mProgressDialog = ProgressDialog(this)
+        mProgressDialog.setMessage("Please Wait....")
+        mProgressDialog.show()
+
         NetworkService.getInstance().jsonApi.fetchApiResponse().enqueue(object:Callback<TestResponse>{
             override fun onResponse(call: Call<TestResponse>, response: Response<TestResponse>) {
+
+
 
                 val response: TestResponse? = response.body()
                 Log.d("Response",response.toString())
@@ -34,6 +47,8 @@ class MainActivity : AppCompatActivity() {
                 var title:String        = response?.title.toString()
                 var hdUrl:String        = response?.hdurl.toString()
 
+
+                id_outer_most_cl.visibility = View.VISIBLE
                 /*Set the values*/
                 id_title_tv.setText(title)
                 id_description_tv.setText(explanation)
@@ -43,22 +58,34 @@ class MainActivity : AppCompatActivity() {
                 if(mediaType == "image"){
                     val url = URL(hdUrl)
 
-                    val SDK_INT = Build.VERSION.SDK_INT
-                    if (SDK_INT > 8) {
-                        val policy =
-                            StrictMode.ThreadPolicy.Builder()
-                                .permitAll().build()
-                        StrictMode.setThreadPolicy(policy)
+                    Glide.with(this@MainActivity)
+                        .load(url)
+                        .listener(object : RequestListener<Drawable> {
+                            override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                                mProgressDialog.dismiss()
+                                return false
+                            }
 
-                        val bmp =
-                            BitmapFactory.decodeStream(url.openConnection().getInputStream())
-                        id_iv.setImageBitmap(bmp)
-                    }
+                            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                                mProgressDialog.dismiss()
+                                return false
+                            }
+                        })
+                        .into(id_iv)
+
+                        id_play_or_zoom_btn.setOnClickListener(View.OnClickListener {
+
+                            val intent = Intent(this@MainActivity, PhotoOrVideoPreviewActivity::class.java)
+                            intent.putExtra("url",hdUrl)
+                            startActivity(intent);
+
+//                            overridePendingTransition( R.anim.slide_in_right, R.anim.slide_out_left );
+
+                        })
 
                 }else if(mediaType == "video"){
 
                 }
-
             }
 
             override fun onFailure(call: Call<TestResponse>, t: Throwable) {
@@ -68,7 +95,10 @@ class MainActivity : AppCompatActivity() {
 
 
 
+
 //        id_play_or_zoom_btn.setOnClickListener(View.OnClickListener {
+//
+//
 //
 //        })
 //

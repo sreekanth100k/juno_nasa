@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity() {
                             intent.putExtra("url",hdUrl)
                             startActivity(intent);
 
-//                            overridePendingTransition( R.anim.slide_in_right, R.anim.slide_out_left );
+                            overridePendingTransition( R.anim.slide_in_from_right_bottom, R.anim.no_animation );
 
                         })
 

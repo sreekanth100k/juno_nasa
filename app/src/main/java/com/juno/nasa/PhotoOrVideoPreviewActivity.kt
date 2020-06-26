@@ -17,7 +17,6 @@ class PhotoOrVideoPreviewActivity:AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
         setContentView(R.layout.photo_or_video_preview)
 
@@ -42,5 +41,13 @@ class PhotoOrVideoPreviewActivity:AppCompatActivity() {
                 }
             })
             .into(id_iv)
+    }
+
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+        overridePendingTransition( R.anim.no_animation, R.anim.slide_out_from_left_top );
+
     }
 }

@@ -69,10 +69,11 @@
         android:id="@+id/id_description_tv"/>
     <Button
         android:layout_width="100dip"
+        android:layout_margin="10dip"
         android:id="@+id/id_play_or_zoom_btn"
         android:gravity="bottom"
         android:layout_gravity="bottom"
-        android:background="@android:drawable/ic_menu_zoom"
+        android:background="@drawable/ic_magnifier_glass"
         android:layout_height="100dip"/>
 
     </LinearLayout>

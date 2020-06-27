@@ -33,9 +33,7 @@ class PhotoOrVideoPreviewActivity:AppCompatActivity() {
 
 
         if(photoOrVideo.equals("photo")){
-            Toast.makeText(this,"Photo",Toast.LENGTH_SHORT).show()
         }else if(photoOrVideo.equals("video")){
-            Toast.makeText(this,"Video",Toast.LENGTH_SHORT).show()
 
             id_iv.visibility = View.GONE
 

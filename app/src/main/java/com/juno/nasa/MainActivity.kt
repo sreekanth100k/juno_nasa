@@ -2,6 +2,7 @@ package com.juno.nasa
 
 import android.app.DatePickerDialog
 import android.app.ProgressDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -113,117 +114,157 @@ class MainActivity : AppCompatActivity() {
 
 
         ic_calendar_icon.setOnClickListener(View.OnClickListener{
-            val c       =   java.util.Calendar.getInstance()
-            val year    =   c.get(Calendar.YEAR)
-            val month   =   c.get(Calendar.MONTH)
-            val day     =   c.get(Calendar.DAY_OF_MONTH)
-            val datePickerDialogObj     =   DatePickerDialog(this, DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+            if(!mIsDatePickerDialogObjShowing) {
+                val c = java.util.Calendar.getInstance()
+                val year = c.get(Calendar.YEAR)
+                val month = c.get(Calendar.MONTH)
+                val day = c.get(Calendar.DAY_OF_MONTH)
+                val datePickerDialogObj = DatePickerDialog(
+                    this,
+                    DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
 
 
-                mIsDatePickerDialogObjShowing  = false;
-                view.visibility = View.GONE
-                var monthOfYearInMM:String = ""
-                if(monthOfYear.toString().length == 1){
-                    monthOfYearInMM = "0"+monthOfYear.toString()
-                }else{
-                    monthOfYearInMM = monthOfYear.toString()
-                }
-
-                var dayOfMonthInDD:String = ""
-                if(dayOfMonth.toString().length == 1){
-                    dayOfMonthInDD = "0"+dayOfMonth.toString()
-                }else{
-                    dayOfMonthInDD = dayOfMonth.toString()
-                }
-
-
-                var date:String = year.toString()+"-"+monthOfYearInMM+"-"+dayOfMonthInDD;
-
-                Toast.makeText(this,date,Toast.LENGTH_LONG).show()
-
-                mProgressDialog.show()
-
-                NetworkService.getInstance().jsonApi.fetchApiResponseForDate(date).enqueue(object:Callback<TestResponse>{
-                    override fun onResponse(call: Call<TestResponse>, response: Response<TestResponse>) {
-
-                        mProgressDialog.dismiss()
-
-                        val response: TestResponse? = response.body()
-                        Log.d("Response",response.toString())
-
-                        var explanation:String  = response?.explanation.toString()
-                        var date:String         = response?.date.toString()
-                        var mediaType:String    = response?.media_type.toString()
-                        var title:String        = response?.title.toString()
-                        var hdUrl:String        = response?.hdurl.toString()
-
-
-                        id_outer_most_cl.visibility = View.VISIBLE
-                        /*Set the values*/
-                        id_title_tv.setText(title)
-                        id_description_tv.setText(explanation)
-                        id_description_tv.setMovementMethod(ScrollingMovementMethod())
-                        id_title_tv.setMovementMethod(ScrollingMovementMethod())
-
-                        if(mediaType == "image"){
-                            id_play_or_zoom_btn.setBackgroundResource(R.drawable.ic_magnifier_glass)
-
-                            val url = URL(hdUrl)
-                            id_iv.visibility = View.GONE
-                            id_pb_instead_of_iv.visibility = View.VISIBLE
-
-                            Glide.with(this@MainActivity)
-                                .load(url)
-                                .listener(object : RequestListener<Drawable> {
-                                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                                        id_iv.visibility = View.VISIBLE
-                                        id_pb_instead_of_iv.visibility = View.GONE
-                                        return false
-                                    }
-
-                                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                                        id_iv.visibility = View.VISIBLE
-                                        id_pb_instead_of_iv.visibility = View.GONE
-                                        return false
-                                    }
-                                })
-                                .into(id_iv)
-
-
-                            id_play_or_zoom_btn.setOnClickListener(View.OnClickListener {
-
-                                val intent = Intent(this@MainActivity, PhotoOrVideoPreviewActivity::class.java)
-                                intent.putExtra("url",hdUrl)
-                                intent.putExtra("photoOrVideo","photo")
-                                startActivity(intent);
-
-                                overridePendingTransition( R.anim.slide_in_from_right_bottom, R.anim.no_animation);
-
-                            })
-
-                        }else if(mediaType == "video"){
-                            id_play_or_zoom_btn.setBackgroundResource(android.R.drawable.ic_media_play)
-                            id_play_or_zoom_btn.setOnClickListener(View.OnClickListener {
-                                val intent = Intent(this@MainActivity, PhotoOrVideoPreviewActivity::class.java)
-                                intent.putExtra("url",hdUrl)
-                                intent.putExtra("photoOrVideo","video")
-                                startActivity(intent);
-
-                                overridePendingTransition( R.anim.slide_in_from_right_bottom, R.anim.no_animation);
-
-                            })
+                        mIsDatePickerDialogObjShowing = false;
+                        view.visibility = View.GONE
+                        var monthOfYearInMM: String = ""
+                        if (monthOfYear.toString().length == 1) {
+                            monthOfYearInMM = "0" + monthOfYear.toString()
+                        } else {
+                            monthOfYearInMM = monthOfYear.toString()
                         }
-                    }
 
-                    override fun onFailure(call: Call<TestResponse>, t: Throwable) {
-                    }
-                });
+                        var dayOfMonthInDD: String = ""
+                        if (dayOfMonth.toString().length == 1) {
+                            dayOfMonthInDD = "0" + dayOfMonth.toString()
+                        } else {
+                            dayOfMonthInDD = dayOfMonth.toString()
+                        }
 
-            }, year, month, day)
 
-            datePickerDialogObj.setCanceledOnTouchOutside(false);
+                        var date: String =
+                            year.toString() + "-" + monthOfYearInMM + "-" + dayOfMonthInDD;
 
-            datePickerDialogObj.show()
+                        Toast.makeText(this, date, Toast.LENGTH_LONG).show()
+
+                        mProgressDialog.show()
+
+                        NetworkService.getInstance().jsonApi.fetchApiResponseForDate(date)
+                            .enqueue(object : Callback<TestResponse> {
+                                override fun onResponse(
+                                    call: Call<TestResponse>,
+                                    response: Response<TestResponse>
+                                ) {
+
+                                    mProgressDialog.dismiss()
+
+                                    val response: TestResponse? = response.body()
+                                    Log.d("Response", response.toString())
+
+                                    var explanation: String = response?.explanation.toString()
+                                    var date: String = response?.date.toString()
+                                    var mediaType: String = response?.media_type.toString()
+                                    var title: String = response?.title.toString()
+                                    var hdUrl: String = response?.hdurl.toString()
+
+
+                                    id_outer_most_cl.visibility = View.VISIBLE
+                                    /*Set the values*/
+                                    id_title_tv.setText(title)
+                                    id_description_tv.setText(explanation)
+                                    id_description_tv.setMovementMethod(ScrollingMovementMethod())
+                                    id_title_tv.setMovementMethod(ScrollingMovementMethod())
+
+                                    if (mediaType == "image") {
+                                        id_play_or_zoom_btn.setBackgroundResource(R.drawable.ic_magnifier_glass)
+
+                                        val url = URL(hdUrl)
+                                        id_iv.visibility = View.GONE
+                                        id_pb_instead_of_iv.visibility = View.VISIBLE
+
+                                        Glide.with(this@MainActivity)
+                                            .load(url)
+                                            .listener(object : RequestListener<Drawable> {
+                                                override fun onResourceReady(
+                                                    resource: Drawable?,
+                                                    model: Any?,
+                                                    target: Target<Drawable>?,
+                                                    dataSource: DataSource?,
+                                                    isFirstResource: Boolean
+                                                ): Boolean {
+                                                    id_iv.visibility = View.VISIBLE
+                                                    id_pb_instead_of_iv.visibility = View.GONE
+                                                    return false
+                                                }
+
+                                                override fun onLoadFailed(
+                                                    e: GlideException?,
+                                                    model: Any?,
+                                                    target: Target<Drawable>?,
+                                                    isFirstResource: Boolean
+                                                ): Boolean {
+                                                    id_iv.visibility = View.VISIBLE
+                                                    id_pb_instead_of_iv.visibility = View.GONE
+                                                    return false
+                                                }
+                                            })
+                                            .into(id_iv)
+
+
+                                        id_play_or_zoom_btn.setOnClickListener(View.OnClickListener {
+
+                                            val intent = Intent(
+                                                this@MainActivity,
+                                                PhotoOrVideoPreviewActivity::class.java
+                                            )
+                                            intent.putExtra("url", hdUrl)
+                                            intent.putExtra("photoOrVideo", "photo")
+                                            startActivity(intent);
+
+                                            overridePendingTransition(
+                                                R.anim.slide_in_from_right_bottom,
+                                                R.anim.no_animation
+                                            );
+
+                                        })
+
+                                    } else if (mediaType == "video") {
+                                        id_play_or_zoom_btn.setBackgroundResource(android.R.drawable.ic_media_play)
+                                        id_play_or_zoom_btn.setOnClickListener(View.OnClickListener {
+                                            val intent = Intent(
+                                                this@MainActivity,
+                                                PhotoOrVideoPreviewActivity::class.java
+                                            )
+                                            intent.putExtra("url", hdUrl)
+                                            intent.putExtra("photoOrVideo", "video")
+                                            startActivity(intent);
+
+                                            overridePendingTransition(
+                                                R.anim.slide_in_from_right_bottom,
+                                                R.anim.no_animation
+                                            );
+
+                                        })
+                                    }
+                                }
+
+                                override fun onFailure(call: Call<TestResponse>, t: Throwable) {
+                                }
+                            });
+
+                    },
+                    year,
+                    month,
+                    day
+                )
+
+                datePickerDialogObj.setCanceledOnTouchOutside(false);
+
+                datePickerDialogObj.setOnDismissListener(DialogInterface.OnDismissListener {
+                    mIsDatePickerDialogObjShowing = false;
+                })
+
+                datePickerDialogObj.show()
+            }
         })
     }
 }

@@ -24,7 +24,7 @@
         android:gravity="center_vertical"
         android:id="@+id/id_title_tv"
         android:textStyle="bold"
-        android:textSize="20sp"
+        android:textSize="25sp"
         android:layout_height="fill_parent"
         android:textAllCaps="true"
         android:text="Dummy Text Title 1"

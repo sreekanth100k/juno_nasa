@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.View
-import android.widget.DatePicker
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
@@ -27,6 +26,7 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
     lateinit var mProgressDialog:ProgressDialog
+    var mIsDatePickerDialogObjShowing:Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +64,8 @@ class MainActivity : AppCompatActivity() {
 
                     id_iv.visibility = View.GONE
 //                    id_pb_instead_of_iv.visibility = View.VISIBLE
+                    id_play_or_zoom_btn.setBackgroundResource(R.drawable.ic_magnifier_glass)
+
 
                     Glide.with(this@MainActivity)
                         .load(url)
@@ -115,7 +117,11 @@ class MainActivity : AppCompatActivity() {
             val year    =   c.get(Calendar.YEAR)
             val month   =   c.get(Calendar.MONTH)
             val day     =   c.get(Calendar.DAY_OF_MONTH)
-            val dpd     =   DatePickerDialog(this, DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+            val datePickerDialogObj     =   DatePickerDialog(this, DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+
+
+                mIsDatePickerDialogObjShowing  = false;
+                view.visibility = View.GONE
                 var monthOfYearInMM:String = ""
                 if(monthOfYear.toString().length == 1){
                     monthOfYearInMM = "0"+monthOfYear.toString()
@@ -160,6 +166,8 @@ class MainActivity : AppCompatActivity() {
                         id_title_tv.setMovementMethod(ScrollingMovementMethod())
 
                         if(mediaType == "image"){
+                            id_play_or_zoom_btn.setBackgroundResource(R.drawable.ic_magnifier_glass)
+
                             val url = URL(hdUrl)
                             id_iv.visibility = View.GONE
                             id_pb_instead_of_iv.visibility = View.VISIBLE
@@ -203,7 +211,6 @@ class MainActivity : AppCompatActivity() {
 
                                 overridePendingTransition( R.anim.slide_in_from_right_bottom, R.anim.no_animation);
 
-
                             })
                         }
                     }
@@ -214,7 +221,9 @@ class MainActivity : AppCompatActivity() {
 
             }, year, month, day)
 
-            dpd.show()
+            datePickerDialogObj.setCanceledOnTouchOutside(false);
+
+            datePickerDialogObj.show()
         })
     }
 }

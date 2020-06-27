@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         NetworkService.getInstance().jsonApi.fetchApiResponse().enqueue(object:Callback<TestResponse>{
             override fun onResponse(call: Call<TestResponse>, response: Response<TestResponse>) {
 
-
+                mProgressDialog.dismiss()
 
                 val response: TestResponse? = response.body()
                 Log.d("Response",response.toString())
@@ -62,16 +62,19 @@ class MainActivity : AppCompatActivity() {
                 if(mediaType == "image"){
                     val url = URL(hdUrl)
 
+                    id_iv.visibility = View.GONE
+//                    id_pb_instead_of_iv.visibility = View.VISIBLE
+
                     Glide.with(this@MainActivity)
                         .load(url)
                         .listener(object : RequestListener<Drawable> {
                             override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                                mProgressDialog.dismiss()
+                                id_iv.visibility = View.VISIBLE
+                                id_pb_instead_of_iv.visibility = View.GONE
                                 return false
                             }
 
                             override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                                mProgressDialog.dismiss()
                                 return false
                             }
                         })
@@ -137,6 +140,8 @@ class MainActivity : AppCompatActivity() {
                 NetworkService.getInstance().jsonApi.fetchApiResponseForDate(date).enqueue(object:Callback<TestResponse>{
                     override fun onResponse(call: Call<TestResponse>, response: Response<TestResponse>) {
 
+                        mProgressDialog.dismiss()
+
                         val response: TestResponse? = response.body()
                         Log.d("Response",response.toString())
 
@@ -156,17 +161,21 @@ class MainActivity : AppCompatActivity() {
 
                         if(mediaType == "image"){
                             val url = URL(hdUrl)
+                            id_iv.visibility = View.GONE
+                            id_pb_instead_of_iv.visibility = View.VISIBLE
 
                             Glide.with(this@MainActivity)
                                 .load(url)
                                 .listener(object : RequestListener<Drawable> {
                                     override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                                        mProgressDialog.dismiss()
+                                        id_iv.visibility = View.VISIBLE
+                                        id_pb_instead_of_iv.visibility = View.GONE
                                         return false
                                     }
 
                                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                                        mProgressDialog.dismiss()
+                                        id_iv.visibility = View.VISIBLE
+                                        id_pb_instead_of_iv.visibility = View.GONE
                                         return false
                                     }
                                 })

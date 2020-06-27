@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:id="@+id/id_outer_most_cl"
     android:layout_height="match_parent"
+    android:padding="10dip"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -45,18 +46,32 @@
         </ImageView>
     </LinearLayout>
 
-    <ImageView
+    <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="0dip"
-        android:id="@+id/id_iv"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/id_title_calendar_parent_ll"
-        app:layout_constraintBottom_toTopOf="@id/id_description_play_parent_ll"
+        app:layout_constraintBottom_toTopOf="@id/id_description_play_parent_ll">
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/id_iv"
+        android:adjustViewBounds="true"
         />
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/id_pb_instead_of_iv"
+            android:layout_centerInParent="true"
+            android:visibility="visible"/>
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="200dip"
+        android:layout_height="150dip"
         app:layout_constraintStart_toStartOf="parent"
         android:id="@+id/id_description_play_parent_ll"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -64,17 +79,20 @@
     <TextView android:layout_height="fill_parent"
         android:layout_width="0dip"
         android:layout_weight="1"
+        android:paddingLeft="5dip"
+        android:paddingRight="5dip"
+        android:textSize="15sp"
         android:text="Dummy Text"
         android:scrollbars = "vertical"
         android:id="@+id/id_description_tv"/>
     <Button
-        android:layout_width="100dip"
+        android:layout_width="50dip"
         android:layout_margin="10dip"
         android:id="@+id/id_play_or_zoom_btn"
         android:gravity="bottom"
         android:layout_gravity="bottom"
         android:background="@drawable/ic_magnifier_glass"
-        android:layout_height="100dip"/>
+        android:layout_height="50dip"/>
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

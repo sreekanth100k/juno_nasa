@@ -30,7 +30,7 @@ class PhotoOrVideoPreviewActivity:AppCompatActivity() {
         var url: String?         = intent.getStringExtra("url")
         var photoOrVideo:String? = intent.getStringExtra("photoOrVideo")
 
-        photoOrVideo  = "video"
+
 
         if(photoOrVideo.equals("photo")){
             Toast.makeText(this,"Photo",Toast.LENGTH_SHORT).show()
@@ -77,7 +77,7 @@ class PhotoOrVideoPreviewActivity:AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
 
-//        overridePendingTransition( R.anim.no_animation, R.anim.slide_out_from_left_top );
+        overridePendingTransition( R.anim.no_animation, R.anim.slide_out_from_left_top );
 
     }
 }

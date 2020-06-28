@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -206,7 +205,6 @@ class MainActivity : AppCompatActivity() {
                         var date: String =
                             year.toString() + "-" + monthOfYearInMM + "-" + dayOfMonthInDD;
 
-                        Toast.makeText(this, date, Toast.LENGTH_LONG).show()
 
                         mProgressDialog.show()
 

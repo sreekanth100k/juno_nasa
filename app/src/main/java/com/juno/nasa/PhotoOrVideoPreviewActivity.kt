@@ -1,13 +1,11 @@
 package com.juno.nasa
 
-import android.R
 import android.app.ProgressDialog
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.widget.MediaController
-import android.widget.VideoView
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -35,7 +33,6 @@ class PhotoOrVideoPreviewActivity:AppCompatActivity() {
             mProgressDialog.setMessage("Loading...")
             mProgressDialog.show()
 
-
             Glide.with(this)
                 .load(url)
                 .listener(object : RequestListener<Drawable> {
@@ -54,19 +51,35 @@ class PhotoOrVideoPreviewActivity:AppCompatActivity() {
 
             id_iv.visibility = View.GONE
 
+//            val videoView       =   findViewById<View>(com.juno.nasa.R.id.id_video_view) as VideoView
+//            val mediaController =   MediaController(this)
+//            mediaController.setAnchorView(videoView)
+//            val uri             =   Uri.parse(url)
+//            videoView.setMediaController(mediaController)
+//            videoView.setVideoURI(uri)
+//            videoView.requestFocus()
+//            videoView.start()
 
+            var youtubeWebView: WebView  = findViewById<View>(com.juno.nasa.R.id.id_video_view) as WebView
 
-            val videoView       =   findViewById<View>(com.juno.nasa.R.id.id_video_view) as VideoView
-            val mediaController =   MediaController(this)
-            mediaController.setAnchorView(videoView)
-            val uri             =   Uri.parse(url)
-            videoView.setMediaController(mediaController)
-            videoView.setVideoURI(uri)
-            videoView.requestFocus()
-            videoView.start()
+            youtubeWebView.setWebViewClient(object : WebViewClient() {
+                override fun shouldOverrideUrlLoading(
+                    view: WebView,
+                    url: String
+                ): Boolean {
+                    return false
+                }
+            })
+
+            val webSettings = youtubeWebView.settings
+            webSettings.javaScriptEnabled = true
+            webSettings.loadWithOverviewMode = true
+            webSettings.useWideViewPort = true
+
+            var urlAsString:String = url as String
+            youtubeWebView.loadUrl(urlAsString)
 
         }
-
     }
 
 

@@ -120,10 +120,10 @@ class MainActivity : AppCompatActivity() {
                     var urlVideoId:String   = getVideoIdFromYoutubeURL(url);
                     var urlLastPart:String  = "/maxresdefault.jpg";
 
-                    var url:String          =   urlFirstPart+urlVideoId+urlLastPart
+                    var urlPhoto:String          =   urlFirstPart+urlVideoId+urlLastPart
 
                     Glide.with(this@MainActivity)
-                        .load(url)
+                        .load(urlPhoto)
                         .listener(object : RequestListener<Drawable> {
                             override fun onResourceReady(
                                 resource: Drawable?,
@@ -296,10 +296,10 @@ class MainActivity : AppCompatActivity() {
                                         var urlVideoId:String   = getVideoIdFromYoutubeURL(url);
                                         var urlLastPart:String  = "/maxresdefault.jpg";
 
-                                        var url:String          =   urlFirstPart+urlVideoId+urlLastPart
+                                        var urlPhoto:String          =   urlFirstPart+urlVideoId+urlLastPart
 
                                         Glide.with(this@MainActivity)
-                                            .load(url)
+                                            .load(urlPhoto)
                                             .listener(object : RequestListener<Drawable> {
                                                 override fun onResourceReady(
                                                     resource: Drawable?,

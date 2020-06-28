@@ -24,12 +24,26 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.net.URL
 import java.util.*
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var mProgressDialog:ProgressDialog
     var mIsDatePickerDialogObjShowing:Boolean = false
+
+    fun getVideoIdFromYoutubeURL(url:String):String {
+        var pattern:String = "(?<=watch\\?v=|/videos/|embed\\/|youtu.be\\/|\\/v\\/|\\/e\\/|watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|embed%\u200C\u200B2F|youtu.be%2F|%2Fv%2F)[^#\\&\\?\\n]*";
+
+        var compiledPattern:Pattern = Pattern.compile (pattern)
+        var matcher:Matcher = compiledPattern.matcher (url) //url is youtube url for which you want to extract the id.
+        if (matcher.find()) {
+            return matcher.group()
+        }
+
+        return ""
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +67,7 @@ class MainActivity : AppCompatActivity() {
                 var mediaType:String    = response?.media_type.toString()
                 var title:String        = response?.title.toString()
                 var hdUrl:String        = response?.hdurl.toString()
+                var url:String          = response?.url.toString()
 
 
                 id_outer_most_cl.visibility = View.VISIBLE
@@ -97,15 +112,57 @@ class MainActivity : AppCompatActivity() {
 
                         })
 
-                }else if(mediaType == "video"){
+                }else if (mediaType == "video") {
+
                     id_play_or_zoom_btn.setBackgroundResource(android.R.drawable.ic_media_play)
+
+                    var urlFirstPart:String = "https://img.youtube.com/vi/";
+                    var urlVideoId:String   = getVideoIdFromYoutubeURL(url);
+                    var urlLastPart:String  = "/maxresdefault.jpg";
+
+                    var url:String          =   urlFirstPart+urlVideoId+urlLastPart
+
+                    Glide.with(this@MainActivity)
+                        .load(url)
+                        .listener(object : RequestListener<Drawable> {
+                            override fun onResourceReady(
+                                resource: Drawable?,
+                                model: Any?,
+                                target: Target<Drawable>?,
+                                dataSource: DataSource?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                id_iv.visibility = View.VISIBLE
+                                id_pb_instead_of_iv.visibility = View.GONE
+                                return false
+                            }
+
+                            override fun onLoadFailed(
+                                e: GlideException?,
+                                model: Any?,
+                                target: Target<Drawable>?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                id_iv.visibility = View.VISIBLE
+                                id_pb_instead_of_iv.visibility = View.GONE
+                                return false
+                            }
+                        })
+                        .into(id_iv)
+
                     id_play_or_zoom_btn.setOnClickListener(View.OnClickListener {
-                        val intent = Intent(this@MainActivity, PhotoOrVideoPreviewActivity::class.java)
-                        intent.putExtra("url",hdUrl)
-                        intent.putExtra("photoOrVideo","video")
+                        val intent = Intent(
+                            this@MainActivity,
+                            PhotoOrVideoPreviewActivity::class.java
+                        )
+                        intent.putExtra("url", url)
+                        intent.putExtra("photoOrVideo", "video")
                         startActivity(intent);
 
-                        overridePendingTransition( R.anim.slide_in_from_right_bottom, R.anim.no_animation);
+                        overridePendingTransition(
+                            R.anim.slide_in_from_right_bottom,
+                            R.anim.no_animation
+                        );
                     })
                 }
             }
@@ -163,11 +220,12 @@ class MainActivity : AppCompatActivity() {
                                     Log.d("Response", response.toString())
 
 
-                                    var explanation: String = response?.explanation.toString()
-                                    var date: String = response?.date.toString()
-                                    var mediaType: String = response?.media_type.toString()
-                                    var title: String = response?.title.toString()
-                                    var hdUrl: String = response?.hdurl.toString()
+                                    var explanation: String =   response?.explanation.toString()
+                                    var date: String        =   response?.date.toString()
+                                    var mediaType: String   =   response?.media_type.toString()
+                                    var title: String       =   response?.title.toString()
+                                    var hdUrl: String       =   response?.hdurl.toString()
+                                    var url:String          =   response?.url.toString()
 
 
                                     id_outer_most_cl.visibility = View.VISIBLE
@@ -234,7 +292,11 @@ class MainActivity : AppCompatActivity() {
 
                                         id_play_or_zoom_btn.setBackgroundResource(android.R.drawable.ic_media_play)
 
-                                        var url:String = "https://img.youtube.com/vi/zWFuCO7jyBk/maxresdefault.jpg";
+                                        var urlFirstPart:String = "https://img.youtube.com/vi/";
+                                        var urlVideoId:String   = getVideoIdFromYoutubeURL(url);
+                                        var urlLastPart:String  = "/maxresdefault.jpg";
+
+                                        var url:String          =   urlFirstPart+urlVideoId+urlLastPart
 
                                         Glide.with(this@MainActivity)
                                             .load(url)
@@ -272,7 +334,7 @@ class MainActivity : AppCompatActivity() {
                                                 this@MainActivity,
                                                 PhotoOrVideoPreviewActivity::class.java
                                             )
-                                            intent.putExtra("url", hdUrl)
+                                            intent.putExtra("url", url)
                                             intent.putExtra("photoOrVideo", "video")
                                             startActivity(intent);
 

@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -166,6 +167,15 @@ class MainActivity : AppCompatActivity() {
                             R.anim.no_animation
                         );
                     })
+
+
+                }
+
+                if(response == null){
+                    id_title_tv.setText("Error")
+                    id_iv.visibility                = View.GONE
+                    id_pb_instead_of_iv.visibility  = View.GONE
+                    id_description_tv.setText("Error")
                 }
             }
 
@@ -221,12 +231,15 @@ class MainActivity : AppCompatActivity() {
                                     Log.d("Response", response.toString())
 
 
+
+
                                     var explanation: String =   response?.explanation.toString()
                                     var date: String        =   response?.date.toString()
                                     var mediaType: String   =   response?.media_type.toString()
                                     var title: String       =   response?.title.toString()
                                     var hdUrl: String       =   response?.hdurl.toString()
                                     var url:String          =   response?.url.toString()
+
 
 
                                     id_outer_most_cl.visibility = View.VISIBLE
@@ -346,6 +359,13 @@ class MainActivity : AppCompatActivity() {
 
                                         })
                                     }
+
+                                        if(response == null){
+                                            id_title_tv.setText("Error")
+                                            id_iv.visibility                = View.GONE
+                                            id_pb_instead_of_iv.visibility  = View.GONE
+                                            id_description_tv.setText("Error")
+                                        }
                                 }
 
                                 override fun onFailure(call: Call<TestResponse>, t: Throwable) {

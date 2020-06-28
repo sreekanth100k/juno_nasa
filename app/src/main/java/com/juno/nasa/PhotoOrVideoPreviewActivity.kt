@@ -35,6 +35,7 @@ class PhotoOrVideoPreviewActivity:AppCompatActivity() {
             mProgressDialog = ProgressDialog(this)
             mProgressDialog.setMessage("Loading...")
             mProgressDialog.show()
+            mProgressDialog.setCanceledOnTouchOutside(false)
 
             Glide.with(this)
                 .load(url)

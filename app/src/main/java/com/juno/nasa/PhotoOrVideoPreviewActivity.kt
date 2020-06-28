@@ -22,6 +22,9 @@ class PhotoOrVideoPreviewActivity:AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        supportActionBar?.hide()
+
+
         setContentView(com.juno.nasa.R.layout.photo_or_video_preview)
 
         var url: String?         = intent.getStringExtra("url")

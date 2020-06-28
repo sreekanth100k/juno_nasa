@@ -49,6 +49,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        supportActionBar?.hide()
+
+
         id_outer_most_cl.visibility = View.INVISIBLE
         mProgressDialog = ProgressDialog(this)
         mProgressDialog.setMessage("Please Wait....")
@@ -187,9 +190,9 @@ class MainActivity : AppCompatActivity() {
                         view.visibility = View.GONE
                         var monthOfYearInMM: String = ""
                         if (monthOfYear.toString().length == 1) {
-                            monthOfYearInMM = "0" + monthOfYear.toString()
+                            monthOfYearInMM = "0" + (monthOfYear+1).toString()
                         } else {
-                            monthOfYearInMM = monthOfYear.toString()
+                            monthOfYearInMM = (monthOfYear+1).toString()
                         }
 
                         var dayOfMonthInDD: String = ""

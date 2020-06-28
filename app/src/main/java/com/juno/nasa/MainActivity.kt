@@ -17,6 +17,8 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.id_iv
+import kotlinx.android.synthetic.main.photo_or_video_preview.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -160,6 +162,7 @@ class MainActivity : AppCompatActivity() {
                                     val response: TestResponse? = response.body()
                                     Log.d("Response", response.toString())
 
+
                                     var explanation: String = response?.explanation.toString()
                                     var date: String = response?.date.toString()
                                     var mediaType: String = response?.media_type.toString()
@@ -228,7 +231,42 @@ class MainActivity : AppCompatActivity() {
                                         })
 
                                     } else if (mediaType == "video") {
+
                                         id_play_or_zoom_btn.setBackgroundResource(android.R.drawable.ic_media_play)
+
+                                        var url:String = "https://img.youtube.com/vi/zWFuCO7jyBk/maxresdefault.jpg";
+
+                                        Glide.with(this@MainActivity)
+                                            .load(url)
+                                            .listener(object : RequestListener<Drawable> {
+                                                override fun onResourceReady(
+                                                    resource: Drawable?,
+                                                    model: Any?,
+                                                    target: Target<Drawable>?,
+                                                    dataSource: DataSource?,
+                                                    isFirstResource: Boolean
+                                                ): Boolean {
+                                                    id_iv.visibility = View.VISIBLE
+                                                    id_pb_instead_of_iv.visibility = View.GONE
+                                                    return false
+                                                }
+
+                                                override fun onLoadFailed(
+                                                    e: GlideException?,
+                                                    model: Any?,
+                                                    target: Target<Drawable>?,
+                                                    isFirstResource: Boolean
+                                                ): Boolean {
+                                                    id_iv.visibility = View.VISIBLE
+                                                    id_pb_instead_of_iv.visibility = View.GONE
+                                                    return false
+                                                }
+                                            })
+                                            .into(id_iv)
+
+
+
+
                                         id_play_or_zoom_btn.setOnClickListener(View.OnClickListener {
                                             val intent = Intent(
                                                 this@MainActivity,

@@ -78,16 +78,7 @@
         android:id="@+id/id_description_play_parent_ll"
         app:layout_constraintBottom_toBottomOf="parent"
         android:orientation="horizontal">
-        <!--<com.codesgood.views.JustifiedTextView
-        android:layout_height="fill_parent"
-        android:layout_width="0dip"
-        android:layout_weight="1"
-        android:paddingLeft="5dip"
-        android:paddingRight="5dip"
-        android:textSize="15sp"
-        android:text="Dummy Text"
-        android:scrollbars = "vertical"
-        android:id="@+id/id_description_tv"/>-->
+
         <WebView
             android:layout_height="fill_parent"
             android:layout_width="0dip"

@@ -181,6 +181,10 @@ class MainActivity : AppCompatActivity() {
                     id_iv.visibility                = View.GONE
                     id_pb_instead_of_iv.visibility  = View.GONE
                     id_description_tv.loadData(convertNormalTextToWebViewComplaint("Error"), "text/html", "UTF-8")
+                    id_play_or_zoom_btn.isEnabled  = false
+
+                }else{
+                    id_play_or_zoom_btn.isEnabled = true
                 }
             }
 
@@ -362,6 +366,9 @@ class MainActivity : AppCompatActivity() {
                                             id_pb_instead_of_iv.visibility  = View.GONE
                                             convertNormalTextToWebViewComplaint("Error")
                                             id_description_tv.loadData(convertNormalTextToWebViewComplaint("Error"),"text/html", "UTF-8")
+                                        }else{
+                                            id_play_or_zoom_btn.isEnabled = true
+
                                         }
                                 }
 

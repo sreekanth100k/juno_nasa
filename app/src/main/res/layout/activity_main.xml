@@ -54,6 +54,7 @@
         android:background="@android:color/white"
         android:textColor="@android:color/black"
         android:text="Dummy Text Title 1"
+        android:padding="10dip"
         android:scrollbars = "vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

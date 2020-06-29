@@ -28,6 +28,7 @@
         android:textSize="25sp"
         android:layout_height="fill_parent"
         android:textAllCaps="true"
+        android:textColor="@android:color/black"
         android:text="Dummy Text Title 1"
         android:scrollbars = "vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -103,7 +104,7 @@
         android:id="@+id/id_play_or_zoom_btn"
         android:gravity="bottom"
         android:layout_gravity="bottom"
-        android:background="@drawable/ic_magnifier_glass"
+        android:background="@drawable/ic_magnifier_glass_grey"
         android:layout_height="50dip"/>
 
     </LinearLayout>

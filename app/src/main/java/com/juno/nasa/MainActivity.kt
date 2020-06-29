@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -18,7 +17,6 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.id_iv
-import kotlinx.android.synthetic.main.photo_or_video_preview.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -45,12 +43,16 @@ class MainActivity : AppCompatActivity() {
         return ""
     }
 
+    fun convertNormalTextToWebViewComplaint(iNormalTxt:String):String{
+        return "<p style=\"text-align: justify\">"+ iNormalTxt +"</p>";
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         supportActionBar?.hide()
-
 
         id_outer_most_cl.visibility = View.INVISIBLE
         mProgressDialog = ProgressDialog(this)
@@ -72,30 +74,31 @@ class MainActivity : AppCompatActivity() {
                 var hdUrl:String        = response?.hdurl.toString()
                 var url:String          = response?.url.toString()
 
-
                 id_outer_most_cl.visibility = View.VISIBLE
-                /*Set the values*/
-                id_title_tv.setText(title)
-//                id_description_tv.setText(explanation)
-                id_description_tv.loadData("<p style=\"text-align: justify\">"+ explanation +"</p>", "text/html", "UTF-8");
 
-//                id_description_tv.setMovementMethod(ScrollingMovementMethod())
+                id_title_tv.setText(title)
+                id_description_tv.loadData(convertNormalTextToWebViewComplaint(explanation), "text/html", "UTF-8")
+
                 id_title_tv.setMovementMethod(ScrollingMovementMethod())
 
                 if(mediaType == "image"){
                     val url = URL(hdUrl)
 
                     id_iv.visibility = View.GONE
-//                    id_pb_instead_of_iv.visibility = View.VISIBLE
-                    id_play_or_zoom_btn.setBackgroundResource(R.drawable.ic_magnifier_glass)
-
+                    id_pb_instead_of_iv.visibility = View.VISIBLE
+                    id_play_or_zoom_btn.setBackgroundResource(R.drawable.ic_magnifier_glass_grey)
+                    id_play_or_zoom_btn.isEnabled  = false
 
                     Glide.with(this@MainActivity)
                         .load(url)
                         .listener(object : RequestListener<Drawable> {
                             override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                                id_iv.visibility = View.VISIBLE
-                                id_pb_instead_of_iv.visibility = View.GONE
+                                id_iv.visibility                =   View.VISIBLE
+                                id_pb_instead_of_iv.visibility  =   View.GONE
+                                id_play_or_zoom_btn.isEnabled   =   true
+                                id_play_or_zoom_btn.setBackgroundResource(R.drawable.ic_magnifier_glass_black)
+
+
                                 return false
                             }
 
@@ -177,7 +180,7 @@ class MainActivity : AppCompatActivity() {
                     id_title_tv.setText("Error")
                     id_iv.visibility                = View.GONE
                     id_pb_instead_of_iv.visibility  = View.GONE
-//                    id_description_tv.setText("Error")
+                    id_description_tv.loadData(convertNormalTextToWebViewComplaint("Error"), "text/html", "UTF-8")
                 }
             }
 
@@ -195,8 +198,6 @@ class MainActivity : AppCompatActivity() {
                 val datePickerDialogObj = DatePickerDialog(
                     this,
                     DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-
-
                         mIsDatePickerDialogObjShowing = false;
                         view.visibility = View.GONE
                         var monthOfYearInMM: String = ""
@@ -217,7 +218,6 @@ class MainActivity : AppCompatActivity() {
                         var date: String =
                             year.toString() + "-" + monthOfYearInMM + "-" + dayOfMonthInDD;
 
-
                         mProgressDialog.show()
 
                         NetworkService.getInstance().jsonApi.fetchApiResponseForDate(date)
@@ -226,14 +226,10 @@ class MainActivity : AppCompatActivity() {
                                     call: Call<TestResponse>,
                                     response: Response<TestResponse>
                                 ) {
-
                                     mProgressDialog.dismiss()
 
                                     val response: TestResponse? = response.body()
                                     Log.d("Response", response.toString())
-
-
-
 
                                     var explanation: String =   response?.explanation.toString()
                                     var date: String        =   response?.date.toString()
@@ -242,17 +238,15 @@ class MainActivity : AppCompatActivity() {
                                     var hdUrl: String       =   response?.hdurl.toString()
                                     var url:String          =   response?.url.toString()
 
-
-
                                     id_outer_most_cl.visibility = View.VISIBLE
                                     /*Set the values*/
                                     id_title_tv.setText(title)
-//                                    id_description_tv.setText(explanation)
-//                                    id_description_tv.setMovementMethod(ScrollingMovementMethod())
+                                    id_description_tv.loadData(convertNormalTextToWebViewComplaint(explanation),"text/html", "UTF-8")
                                     id_title_tv.setMovementMethod(ScrollingMovementMethod())
 
                                     if (mediaType == "image") {
-                                        id_play_or_zoom_btn.setBackgroundResource(R.drawable.ic_magnifier_glass)
+                                        id_play_or_zoom_btn.setBackgroundResource(R.drawable.ic_magnifier_glass_grey)
+                                        id_play_or_zoom_btn.isEnabled  = false
 
                                         val url = URL(hdUrl)
                                         id_iv.visibility = View.GONE
@@ -270,6 +264,9 @@ class MainActivity : AppCompatActivity() {
                                                 ): Boolean {
                                                     id_iv.visibility = View.VISIBLE
                                                     id_pb_instead_of_iv.visibility = View.GONE
+                                                    id_play_or_zoom_btn.isEnabled  = true
+                                                    id_play_or_zoom_btn.setBackgroundResource(R.drawable.ic_magnifier_glass_black)
+
                                                     return false
                                                 }
 
@@ -342,9 +339,6 @@ class MainActivity : AppCompatActivity() {
                                             })
                                             .into(id_iv)
 
-
-
-
                                         id_play_or_zoom_btn.setOnClickListener(View.OnClickListener {
                                             val intent = Intent(
                                                 this@MainActivity,
@@ -366,7 +360,8 @@ class MainActivity : AppCompatActivity() {
                                             id_title_tv.setText("Error")
                                             id_iv.visibility                = View.GONE
                                             id_pb_instead_of_iv.visibility  = View.GONE
-//                                            id_description_tv.setText("Error")
+                                            convertNormalTextToWebViewComplaint("Error")
+                                            id_description_tv.loadData(convertNormalTextToWebViewComplaint("Error"),"text/html", "UTF-8")
                                         }
                                 }
 

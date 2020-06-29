@@ -56,14 +56,6 @@ class PhotoOrVideoPreviewActivity:AppCompatActivity() {
 
             id_iv.visibility = View.GONE
 
-//            val videoView       =   findViewById<View>(com.juno.nasa.R.id.id_video_view) as VideoView
-//            val mediaController =   MediaController(this)
-//            mediaController.setAnchorView(videoView)
-//            val uri             =   Uri.parse(url)
-//            videoView.setMediaController(mediaController)
-//            videoView.setVideoURI(uri)
-//            videoView.requestFocus()
-//            videoView.start()
 
             var youtubeWebView: WebView  = findViewById<View>(com.juno.nasa.R.id.id_video_view) as WebView
 

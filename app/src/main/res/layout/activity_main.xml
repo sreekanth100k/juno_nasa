@@ -96,7 +96,7 @@
             style="?android:attr/progressBarStyleSmall"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:id="@+id/id_pb_instead_of_iv"
+            android:id="@+id/id_image_loading_pb"
             android:layout_centerInParent="true"
             android:visibility="visible"/>
     </RelativeLayout>
@@ -131,7 +131,7 @@
         android:layout_margin="10dip"
         android:id="@+id/id_play_or_zoom_btn"
         android:gravity="bottom"
-        android:background="@drawable/ic_magnifier_glass_grey"
+        android:background="@drawable/ic_magnifier_glass_disabled_grey"
         android:layout_height="50dip"/>
         </LinearLayout>
 

@@ -38,16 +38,19 @@ class PhotoOrVideoPreviewActivity:AppCompatActivity() {
             mProgressDialog.setCanceledOnTouchOutside(false)
             mProgressDialog.setCancelable(false)
 
+
             Glide.with(this)
                 .load(url)
                 .listener(object : RequestListener<Drawable> {
                     override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                         mProgressDialog.dismiss()
+
                         return false
                     }
 
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                         mProgressDialog.dismiss()
+
                         return false
                     }
                 })

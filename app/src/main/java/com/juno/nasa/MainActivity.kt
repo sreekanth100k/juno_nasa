@@ -28,7 +28,8 @@ import java.util.regex.Pattern
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var mProgressDialog:ProgressDialog
+    lateinit var mWaitingForNetworkResponsePd:ProgressDialog
+    //to avoid duplicate date picker dialogs
     var mIsDatePickerDialogObjShowing:Boolean = false
 
     fun getVideoIdFromYoutubeURL(url:String):String {
@@ -47,6 +48,150 @@ class MainActivity : AppCompatActivity() {
         return "<p style=\"text-align: justify\">"+ iNormalTxt +"</p>";
     }
 
+    fun decodeResponseAndDoNecessaryActions(response:Response<TestResponse>){
+        mWaitingForNetworkResponsePd.dismiss()
+
+        val response: TestResponse? = response.body()
+        Log.d("Response", response.toString())
+
+        var explanation: String =   response?.explanation.toString()
+        var date: String        =   response?.date.toString()
+        var mediaType: String   =   response?.media_type.toString()
+        var title: String       =   response?.title.toString()
+        var hdUrl: String       =   response?.hdurl.toString()
+        var url:String          =   response?.url.toString()
+
+        id_outer_most_cl.visibility = View.VISIBLE
+        /*Set the values*/
+        id_title_tv.setText(title)
+        id_description_tv.loadData(convertNormalTextToWebViewComplaint(explanation),"text/html", "UTF-8")
+        id_title_tv.setMovementMethod(ScrollingMovementMethod())
+
+        if (mediaType == "image") {
+            id_play_or_zoom_btn.setBackgroundResource(R.drawable.ic_magnifier_glass_disabled_grey)
+            id_play_or_zoom_btn.isEnabled  = false
+
+            val url = URL(hdUrl)
+            id_iv.visibility = View.GONE
+            id_image_loading_pb.visibility = View.VISIBLE
+
+            Glide.with(this@MainActivity)
+                .load(url)
+                .listener(object : RequestListener<Drawable> {
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        id_iv.visibility = View.VISIBLE
+                        id_image_loading_pb.visibility = View.GONE
+                        id_play_or_zoom_btn.isEnabled  = true
+                        id_play_or_zoom_btn.setBackgroundResource(R.drawable.ic_magnifier_glass_enabled_black)
+
+                        return false
+                    }
+
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        id_iv.visibility = View.VISIBLE
+                        id_image_loading_pb.visibility = View.GONE
+                        return false
+                    }
+                })
+                .into(id_iv)
+
+
+            id_play_or_zoom_btn.setOnClickListener(View.OnClickListener {
+
+                val intent = Intent(
+                    this@MainActivity,
+                    PhotoOrVideoPreviewActivity::class.java
+                )
+                intent.putExtra("url", hdUrl)
+                intent.putExtra("photoOrVideo", "photo")
+                startActivity(intent);
+
+                overridePendingTransition(
+                    R.anim.slide_in_from_right_bottom,
+                    R.anim.no_animation
+                );
+
+            })
+
+        } else if (mediaType == "video") {
+
+            id_play_or_zoom_btn.setBackgroundResource(android.R.drawable.ic_media_play)
+
+            var urlFirstPart:String = "https://img.youtube.com/vi/";
+            var urlVideoId:String   = getVideoIdFromYoutubeURL(url);
+            var urlLastPart:String  = "/maxresdefault.jpg";
+
+            var urlPhoto:String          =   urlFirstPart+urlVideoId+urlLastPart
+
+            Glide.with(this@MainActivity)
+                .load(urlPhoto)
+                .listener(object : RequestListener<Drawable> {
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        id_iv.visibility = View.VISIBLE
+                        id_image_loading_pb.visibility = View.GONE
+                        return false
+                    }
+
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        id_iv.visibility = View.VISIBLE
+                        id_image_loading_pb.visibility = View.GONE
+                        return false
+                    }
+                })
+                .into(id_iv)
+
+            id_play_or_zoom_btn.setOnClickListener(View.OnClickListener {
+                val intent = Intent(
+                    this@MainActivity,
+                    PhotoOrVideoPreviewActivity::class.java
+                )
+                intent.putExtra("url", url)
+                intent.putExtra("photoOrVideo", "video")
+                startActivity(intent);
+
+                overridePendingTransition(
+                    R.anim.slide_in_from_right_bottom,
+                    R.anim.no_animation
+                );
+
+            })
+        }
+
+        if(response == null){
+            id_title_tv.setText("Error")
+            id_play_or_zoom_btn.isEnabled = false
+            id_iv.visibility                = View.GONE
+            id_image_loading_pb.visibility  = View.GONE
+            convertNormalTextToWebViewComplaint("Error")
+            id_description_tv.loadData(convertNormalTextToWebViewComplaint("Error"),"text/html", "UTF-8")
+        }else{
+            id_play_or_zoom_btn.isEnabled = true
+
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,137 +200,13 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.hide()
 
         id_outer_most_cl.visibility = View.INVISIBLE
-        mProgressDialog = ProgressDialog(this)
-        mProgressDialog.setMessage("Please Wait....")
-        mProgressDialog.show()
+        mWaitingForNetworkResponsePd = ProgressDialog(this)
+        mWaitingForNetworkResponsePd.setMessage("Loading....")
+        mWaitingForNetworkResponsePd.show()
 
         NetworkService.getInstance().jsonApi.fetchApiResponse().enqueue(object:Callback<TestResponse>{
             override fun onResponse(call: Call<TestResponse>, response: Response<TestResponse>) {
-
-                mProgressDialog.dismiss()
-
-                val response: TestResponse? = response.body()
-                Log.d("Response",response.toString())
-
-                var explanation:String  = response?.explanation.toString()
-                var date:String         = response?.date.toString()
-                var mediaType:String    = response?.media_type.toString()
-                var title:String        = response?.title.toString()
-                var hdUrl:String        = response?.hdurl.toString()
-                var url:String          = response?.url.toString()
-
-                id_outer_most_cl.visibility = View.VISIBLE
-
-                id_title_tv.setText(title)
-                id_description_tv.loadData(convertNormalTextToWebViewComplaint(explanation), "text/html", "UTF-8")
-
-                id_title_tv.setMovementMethod(ScrollingMovementMethod())
-
-                if(mediaType == "image"){
-                    val url = URL(hdUrl)
-
-                    id_iv.visibility = View.GONE
-                    id_pb_instead_of_iv.visibility = View.VISIBLE
-                    id_play_or_zoom_btn.setBackgroundResource(R.drawable.ic_magnifier_glass_grey)
-                    id_play_or_zoom_btn.isEnabled  = false
-
-                    Glide.with(this@MainActivity)
-                        .load(url)
-                        .listener(object : RequestListener<Drawable> {
-                            override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                                id_iv.visibility                =   View.VISIBLE
-                                id_pb_instead_of_iv.visibility  =   View.GONE
-                                id_play_or_zoom_btn.isEnabled   =   true
-                                id_play_or_zoom_btn.setBackgroundResource(R.drawable.ic_magnifier_glass_black)
-
-
-                                return false
-                            }
-
-                            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                                return false
-                            }
-                        })
-                        .into(id_iv)
-
-
-                    id_play_or_zoom_btn.setOnClickListener(View.OnClickListener {
-
-                            val intent = Intent(this@MainActivity, PhotoOrVideoPreviewActivity::class.java)
-                            intent.putExtra("url",hdUrl)
-                            intent.putExtra("photoOrVideo","photo")
-                            startActivity(intent);
-
-                            overridePendingTransition( R.anim.slide_in_from_right_bottom, R.anim.no_animation);
-
-                        })
-
-                }else if (mediaType == "video") {
-
-                    id_play_or_zoom_btn.setBackgroundResource(android.R.drawable.ic_media_play)
-
-                    var urlFirstPart:String = "https://img.youtube.com/vi/";
-                    var urlVideoId:String   = getVideoIdFromYoutubeURL(url);
-                    var urlLastPart:String  = "/maxresdefault.jpg";
-
-                    var urlPhoto:String          =   urlFirstPart+urlVideoId+urlLastPart
-
-                    Glide.with(this@MainActivity)
-                        .load(urlPhoto)
-                        .listener(object : RequestListener<Drawable> {
-                            override fun onResourceReady(
-                                resource: Drawable?,
-                                model: Any?,
-                                target: Target<Drawable>?,
-                                dataSource: DataSource?,
-                                isFirstResource: Boolean
-                            ): Boolean {
-                                id_iv.visibility = View.VISIBLE
-                                id_pb_instead_of_iv.visibility = View.GONE
-                                return false
-                            }
-
-                            override fun onLoadFailed(
-                                e: GlideException?,
-                                model: Any?,
-                                target: Target<Drawable>?,
-                                isFirstResource: Boolean
-                            ): Boolean {
-                                id_iv.visibility = View.VISIBLE
-                                id_pb_instead_of_iv.visibility = View.GONE
-                                return false
-                            }
-                        })
-                        .into(id_iv)
-
-                    id_play_or_zoom_btn.setOnClickListener(View.OnClickListener {
-                        val intent = Intent(
-                            this@MainActivity,
-                            PhotoOrVideoPreviewActivity::class.java
-                        )
-                        intent.putExtra("url", url)
-                        intent.putExtra("photoOrVideo", "video")
-                        startActivity(intent);
-
-                        overridePendingTransition(
-                            R.anim.slide_in_from_right_bottom,
-                            R.anim.no_animation
-                        );
-                    })
-
-
-                }
-
-                if(response == null){
-                    id_title_tv.setText("Error")
-                    id_iv.visibility                = View.GONE
-                    id_pb_instead_of_iv.visibility  = View.GONE
-                    id_description_tv.loadData(convertNormalTextToWebViewComplaint("Error"), "text/html", "UTF-8")
-                    id_play_or_zoom_btn.isEnabled  = false
-
-                }else{
-                    id_play_or_zoom_btn.isEnabled = true
-                }
+                decodeResponseAndDoNecessaryActions(response)
             }
 
             override fun onFailure(call: Call<TestResponse>, t: Throwable) {
@@ -222,7 +243,7 @@ class MainActivity : AppCompatActivity() {
                         var date: String =
                             year.toString() + "-" + monthOfYearInMM + "-" + dayOfMonthInDD;
 
-                        mProgressDialog.show()
+                        mWaitingForNetworkResponsePd.show()
 
                         NetworkService.getInstance().jsonApi.fetchApiResponseForDate(date)
                             .enqueue(object : Callback<TestResponse> {
@@ -230,147 +251,9 @@ class MainActivity : AppCompatActivity() {
                                     call: Call<TestResponse>,
                                     response: Response<TestResponse>
                                 ) {
-                                    mProgressDialog.dismiss()
 
-                                    val response: TestResponse? = response.body()
-                                    Log.d("Response", response.toString())
+                                    decodeResponseAndDoNecessaryActions(response)
 
-                                    var explanation: String =   response?.explanation.toString()
-                                    var date: String        =   response?.date.toString()
-                                    var mediaType: String   =   response?.media_type.toString()
-                                    var title: String       =   response?.title.toString()
-                                    var hdUrl: String       =   response?.hdurl.toString()
-                                    var url:String          =   response?.url.toString()
-
-                                    id_outer_most_cl.visibility = View.VISIBLE
-                                    /*Set the values*/
-                                    id_title_tv.setText(title)
-                                    id_description_tv.loadData(convertNormalTextToWebViewComplaint(explanation),"text/html", "UTF-8")
-                                    id_title_tv.setMovementMethod(ScrollingMovementMethod())
-
-                                    if (mediaType == "image") {
-                                        id_play_or_zoom_btn.setBackgroundResource(R.drawable.ic_magnifier_glass_grey)
-                                        id_play_or_zoom_btn.isEnabled  = false
-
-                                        val url = URL(hdUrl)
-                                        id_iv.visibility = View.GONE
-                                        id_pb_instead_of_iv.visibility = View.VISIBLE
-
-                                        Glide.with(this@MainActivity)
-                                            .load(url)
-                                            .listener(object : RequestListener<Drawable> {
-                                                override fun onResourceReady(
-                                                    resource: Drawable?,
-                                                    model: Any?,
-                                                    target: Target<Drawable>?,
-                                                    dataSource: DataSource?,
-                                                    isFirstResource: Boolean
-                                                ): Boolean {
-                                                    id_iv.visibility = View.VISIBLE
-                                                    id_pb_instead_of_iv.visibility = View.GONE
-                                                    id_play_or_zoom_btn.isEnabled  = true
-                                                    id_play_or_zoom_btn.setBackgroundResource(R.drawable.ic_magnifier_glass_black)
-
-                                                    return false
-                                                }
-
-                                                override fun onLoadFailed(
-                                                    e: GlideException?,
-                                                    model: Any?,
-                                                    target: Target<Drawable>?,
-                                                    isFirstResource: Boolean
-                                                ): Boolean {
-                                                    id_iv.visibility = View.VISIBLE
-                                                    id_pb_instead_of_iv.visibility = View.GONE
-                                                    return false
-                                                }
-                                            })
-                                            .into(id_iv)
-
-
-                                        id_play_or_zoom_btn.setOnClickListener(View.OnClickListener {
-
-                                            val intent = Intent(
-                                                this@MainActivity,
-                                                PhotoOrVideoPreviewActivity::class.java
-                                            )
-                                            intent.putExtra("url", hdUrl)
-                                            intent.putExtra("photoOrVideo", "photo")
-                                            startActivity(intent);
-
-                                            overridePendingTransition(
-                                                R.anim.slide_in_from_right_bottom,
-                                                R.anim.no_animation
-                                            );
-
-                                        })
-
-                                    } else if (mediaType == "video") {
-
-                                        id_play_or_zoom_btn.setBackgroundResource(android.R.drawable.ic_media_play)
-
-                                        var urlFirstPart:String = "https://img.youtube.com/vi/";
-                                        var urlVideoId:String   = getVideoIdFromYoutubeURL(url);
-                                        var urlLastPart:String  = "/maxresdefault.jpg";
-
-                                        var urlPhoto:String          =   urlFirstPart+urlVideoId+urlLastPart
-
-                                        Glide.with(this@MainActivity)
-                                            .load(urlPhoto)
-                                            .listener(object : RequestListener<Drawable> {
-                                                override fun onResourceReady(
-                                                    resource: Drawable?,
-                                                    model: Any?,
-                                                    target: Target<Drawable>?,
-                                                    dataSource: DataSource?,
-                                                    isFirstResource: Boolean
-                                                ): Boolean {
-                                                    id_iv.visibility = View.VISIBLE
-                                                    id_pb_instead_of_iv.visibility = View.GONE
-                                                    return false
-                                                }
-
-                                                override fun onLoadFailed(
-                                                    e: GlideException?,
-                                                    model: Any?,
-                                                    target: Target<Drawable>?,
-                                                    isFirstResource: Boolean
-                                                ): Boolean {
-                                                    id_iv.visibility = View.VISIBLE
-                                                    id_pb_instead_of_iv.visibility = View.GONE
-                                                    return false
-                                                }
-                                            })
-                                            .into(id_iv)
-
-                                        id_play_or_zoom_btn.setOnClickListener(View.OnClickListener {
-                                            val intent = Intent(
-                                                this@MainActivity,
-                                                PhotoOrVideoPreviewActivity::class.java
-                                            )
-                                            intent.putExtra("url", url)
-                                            intent.putExtra("photoOrVideo", "video")
-                                            startActivity(intent);
-
-                                            overridePendingTransition(
-                                                R.anim.slide_in_from_right_bottom,
-                                                R.anim.no_animation
-                                            );
-
-                                        })
-                                    }
-
-                                        if(response == null){
-                                            id_title_tv.setText("Error")
-                                            id_play_or_zoom_btn.isEnabled = false
-                                            id_iv.visibility                = View.GONE
-                                            id_pb_instead_of_iv.visibility  = View.GONE
-                                            convertNormalTextToWebViewComplaint("Error")
-                                            id_description_tv.loadData(convertNormalTextToWebViewComplaint("Error"),"text/html", "UTF-8")
-                                        }else{
-                                            id_play_or_zoom_btn.isEnabled = true
-
-                                        }
                                 }
 
                                 override fun onFailure(call: Call<TestResponse>, t: Throwable) {

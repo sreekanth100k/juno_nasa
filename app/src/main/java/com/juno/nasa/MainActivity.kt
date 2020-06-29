@@ -362,6 +362,7 @@ class MainActivity : AppCompatActivity() {
 
                                         if(response == null){
                                             id_title_tv.setText("Error")
+                                            id_play_or_zoom_btn.isEnabled = false
                                             id_iv.visibility                = View.GONE
                                             id_pb_instead_of_iv.visibility  = View.GONE
                                             convertNormalTextToWebViewComplaint("Error")

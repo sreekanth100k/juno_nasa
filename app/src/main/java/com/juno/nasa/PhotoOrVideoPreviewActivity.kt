@@ -25,7 +25,7 @@ class PhotoOrVideoPreviewActivity:AppCompatActivity() {
         supportActionBar?.hide()
 
 
-        setContentView(com.juno.nasa.R.layout.photo_or_video_preview)
+        setContentView(com.juno.nasa.R.layout.photo_or_video_preview_activity)
 
         var url: String?         = intent.getStringExtra("url")
         var photoOrVideo:String? = intent.getStringExtra("photoOrVideo")

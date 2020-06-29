@@ -76,8 +76,10 @@ class MainActivity : AppCompatActivity() {
                 id_outer_most_cl.visibility = View.VISIBLE
                 /*Set the values*/
                 id_title_tv.setText(title)
-                id_description_tv.setText(explanation)
-                id_description_tv.setMovementMethod(ScrollingMovementMethod())
+//                id_description_tv.setText(explanation)
+                id_description_tv.loadData("<p style=\"text-align: justify\">"+ explanation +"</p>", "text/html", "UTF-8");
+
+//                id_description_tv.setMovementMethod(ScrollingMovementMethod())
                 id_title_tv.setMovementMethod(ScrollingMovementMethod())
 
                 if(mediaType == "image"){
@@ -175,7 +177,7 @@ class MainActivity : AppCompatActivity() {
                     id_title_tv.setText("Error")
                     id_iv.visibility                = View.GONE
                     id_pb_instead_of_iv.visibility  = View.GONE
-                    id_description_tv.setText("Error")
+//                    id_description_tv.setText("Error")
                 }
             }
 
@@ -245,8 +247,8 @@ class MainActivity : AppCompatActivity() {
                                     id_outer_most_cl.visibility = View.VISIBLE
                                     /*Set the values*/
                                     id_title_tv.setText(title)
-                                    id_description_tv.setText(explanation)
-                                    id_description_tv.setMovementMethod(ScrollingMovementMethod())
+//                                    id_description_tv.setText(explanation)
+//                                    id_description_tv.setMovementMethod(ScrollingMovementMethod())
                                     id_title_tv.setMovementMethod(ScrollingMovementMethod())
 
                                     if (mediaType == "image") {
@@ -364,7 +366,7 @@ class MainActivity : AppCompatActivity() {
                                             id_title_tv.setText("Error")
                                             id_iv.visibility                = View.GONE
                                             id_pb_instead_of_iv.visibility  = View.GONE
-                                            id_description_tv.setText("Error")
+//                                            id_description_tv.setText("Error")
                                         }
                                 }
 
